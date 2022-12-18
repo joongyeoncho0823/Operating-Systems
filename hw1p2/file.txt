@@ -1,0 +1,2 @@
+first line of file.txt
+this is file.txt content

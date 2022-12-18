@@ -1,0 +1,8 @@
+1a) stty(), which changes terminal line settings
+1b) The line *(int *)0 causes a segmentation fault, which causes the handler function to be called. The static variable "cnt" is being incremented continuously since the program is in an infinite loop which continues to assign *(int *)0 = 123, which is a SIGSEGV.
+1c) SIGKILL, SIGSTOP
+1d) SIGCONT (?)
+1e) The signal is only sent once to process #123 because it is not a real-time signal. Real-time signals queue while standard signals do not. Standard signals do not contain any additional information other than from bit map which indicates which signal was sent or not sent. Signal numbers 35-63 can be used instead, which will queue the signals and send the signal 20 times. Another possibility would be to send non-ignorable signals such as SIGKILL which will not be ignored even with the bit mask.
+
+2a) No, since write requests below 4K is atomic, all writes will happen all at once or not at all. In other words, the write system call will write 1024 bytes of "A" or "B", but the two writes cannot be interleaved to produce the sequence "ABA". 
+b) This line closes the write side of the pipe, which means that any more attempts to write will fail. Thus, after the pending data in the pipe has been read out of the pipe, all subsequent reads will return 0, and thus the while loop in the program will end. Without this line, write will continue to happen, and thus continuously writing and reading.

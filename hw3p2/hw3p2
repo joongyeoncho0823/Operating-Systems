@@ -1,0 +1,4 @@
+## Problem 2
+a) The output will be "XY". Since it is a global variable that is declared but not explicitly initialized, its initialized value is '\0', the null pointer. 
+b) "/tmp/osps3.py" will replace the existing program in the virtual address space, the 'l' variant accepts a variable argument list, terminated by NULL. Thus, the arguments for this call is ["osps3.py", "myinput.txt"]
+c) From the C standard library, not the kernel. The C standard library contains functions "getenv", "putenv" to query/create envrionemnt variable settings. These non-'e' variants pass along the pre-existing environment to the next program.

@@ -1,0 +1,25 @@
+# Problem A 
+1. echo "PROCRASTINATION" > tesfile
+ atime / mtime / ctime will all be set to Sept 21, 2022 12:00:00 -  00:00:00 on January 1, 1970 (in seconds)
+
+2. cat testfile
+cat reads the contents of the file, thus atime is changed to Sept 21, 2022 12:10:00 - 00:00:00 on January 1, 1970 (in seconds)
+
+3. touch -m -t 09190000.00 testfile
+The -m flag changes only the modification time and the -t flag specifies the time to modify to instead of current time
+mtime = 2022-09-19 00:00:00.000000000  
+# Problem B
+i) Since this volume does not employ journaling, it will run fsck which cross checks the on-disk data with the information from the inode table and free map.
+ii) it could find inodes with deleted files, invalid files, or files that got "lost". For instance, if a particular inode had deleted a file but the directory still contained
+its inode number(it might have crashed between deleting file & deleting link) in its entries list, then it means it's a corrupt filesystem. 
+iii) Yes, it will have to correspond the data for a million active inodes, but also confirm that the unused inodes are indeed being unused (which essentially means it has to check all 2TB of the volume)
+iv) Journaling records changes to the filesystem in atomic units (they either happened all at once, or not at all). The atomicity ensures that a system crash during a transaction does not lead to issues
+by performing half of the transaction. It will not check each data block like fsck, but rather (from oldest to newest) re-do the committed transactions and skip all transactions that did not commit but begun
+# Problem C
+As the video is playing, the kernel is constantly making system calls to the disk. But rather than make several system calls with a fixed buffer size, it can make one system call to fetch
+a lot more data, and cache it in kernel memory, which allows to fetch a lot of data at once for a slight lag. In this case, it is likely that when you rewind the favorite part, that part of the video
+is still in cache, so it is almost immediately refreshed. However, when you rewind to the beginning, that part of the video is no longer in the cache (cache size is limited/expensive),
+ which means you would have to make a syscall to the disk as if it's the first time you're watching the video. 
+# Problem D
+In the first case, the mv is simply performing a rename within the same volume. In the second scenario, the two paths are in different volumes, which means that the 
+mv is actually performing a cp (copy) and rm (remove), along with utime, chown, chmod system calls to modify the metadata of the new_file from cp to match the metadata of the old file (except where it shouldnt). This increases the number of system calls, leading to longer completion time. 
